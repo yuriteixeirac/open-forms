@@ -21,7 +21,7 @@ class AuthBackend(BaseBackend):
         except ValidationError:
             return
 
-        user: User = User.objects.get(email=email).first()    # type: ignore
+        user: User = User.objects.filter(email=email).first()    # type: ignore
 
         if not user:
             return
