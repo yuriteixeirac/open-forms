@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+{% block head %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style/main.css' %}">
+{% endblock %}
+
+{% block main %}
+    <div class="hero">
+        <h1>Forms you control. Data you keep.</h1>
+        <p>Build unlimited forms, collect submissions, and keep every response safely on your own infrastructure. Open source, self‑hosted, and private by design.</p>
+        <a id="get-started-button" href="">Get started!</a>
+    </div>
+
+    <section class="features">
+        <h2>Core features</h2>
+        <div class="feature-cards">
+            <div class="feature-card">
+                <h3>Security</h3>
+                <p>OpenForms runs entirely within your private infrastructure. No external CDNs, no third‑party APIs, no telemetry — every form submission and uploaded asset stays inside your network, under your control. Scalable, encrypted, and private by design.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Control</h3>
+                <p>You decide who sees what, when data disappears, and how long forms live. OpenForms is built for organisations that take data responsibility seriously — no mysterious defaults, no vendor lock‑in.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Ease-of-use</h3>
+                <p>One Docker command gets you running. Creating a form is as simple as typing a few field labels — no drag‑and‑drop complexity, no training required. Both admins and respondents get a clean, straightforward experience that respects their time and their privacy.</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}
