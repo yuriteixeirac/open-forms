@@ -10,10 +10,13 @@ class AuthBackend(BaseBackend):
     def authenticate(
         self,
         request: Optional[HttpRequest],
+        username: str | None = None,
         email: str | None = None,
         password: str | None = None
     ) -> User | None:     # type: ignore
-        if not (email and password):
+        email = email or username
+
+        if not (email):
             return
 
         try:
