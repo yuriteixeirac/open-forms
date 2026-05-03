@@ -7,7 +7,7 @@ from apps.engine.models import Survey
 from apps.engine.serializers import SurveyInputSerializer, SurveyOutputSerializer
 
 
-class SurveyViews(ViewSet):
+class SurveyViewSet(ViewSet):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -38,7 +38,7 @@ class SurveyViews(ViewSet):
                 'errors': serializer.errors
             })
 
-        questions = serializer.data.get('schema')
+        questions = serializer.data.get('questions')
 
         for question in questions:
             question['id'] = str(uuid4())[:4]
@@ -47,7 +47,7 @@ class SurveyViews(ViewSet):
             owner=request.user,
             name=serializer.data.get('name'),
             description=serializer.data.get('description'),
-            schema=serializer.data.get('schema'),
+            questions=serializer.data.get('questions'),
         )
         survey.save()
 
