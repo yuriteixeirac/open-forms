@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ViewSet
-from apps.engine.models import Submission, Survey
-from apps.engine.serializers import SubmissionInputSerializer, SubmissionOutputSerializer
+from apps.api.models import Submission, Survey
+from apps.api.serializers import SubmissionInputSerializer, SubmissionOutputSerializer
 
 """
 TODO:

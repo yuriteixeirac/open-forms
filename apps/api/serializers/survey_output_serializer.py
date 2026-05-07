@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.engine.models import Survey
+from apps.api.models import Survey
 from .question_serializer import QuestionSerializer
 
 class SurveyOutputSerializer(serializers.ModelSerializer):

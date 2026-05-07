@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from uuid import uuid4
-from apps.engine.models import Survey
-from apps.engine.serializers import SurveyInputSerializer, SurveyOutputSerializer
+from apps.api.models import Survey
+from apps.api.serializers import SurveyInputSerializer, SurveyOutputSerializer
 
 
 class SurveyViewSet(ViewSet):

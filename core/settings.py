@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.engine',
     'apps.accounts',
     'apps.home',
+    'apps.api',
 ]
 
 MIDDLEWARE = [

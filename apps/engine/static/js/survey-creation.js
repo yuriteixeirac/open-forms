@@ -1,7 +1,10 @@
+/* survey-creation.js */
+
 let questions = [];
 let selectedType = "text";
 let nextId = 1;
 
+/* ─── Type selector ─────────────────────────────────────────── */
 document.querySelectorAll(".type-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     document
@@ -12,6 +15,7 @@ document.querySelectorAll(".type-btn").forEach((btn) => {
   });
 });
 
+/* ─── Add field ─────────────────────────────────────────────── */
 function addField() {
   const id = nextId++;
   const q = {
@@ -23,7 +27,7 @@ function addField() {
   };
 
   if (selectedType === "radio" || selectedType === "checkbox") {
-    q.options = ["", ""];
+    q.options = ["", ""]; // start with two empty options
   }
 
   questions.push(q);
@@ -32,6 +36,7 @@ function addField() {
   updateEmptyState();
 }
 
+/* ─── Render a single card ───────────────────────────────────── */
 function renderCard(q) {
   const container = document.getElementById("survey-fields");
   const index = questions.findIndex((x) => x.id === q.id);
@@ -100,6 +105,7 @@ function optionRowHtml(qId, index, value, bulletClass) {
     `;
 }
 
+/* ─── Mutations ─────────────────────────────────────────────── */
 function updateQuestion(id, key, value) {
   const q = questions.find((x) => x.id === id);
   if (q) q[key] = value;
@@ -134,6 +140,7 @@ function removeOption(qId, index) {
 
   q.options.splice(index, 1);
 
+  // re-render options list content only
   const bulletClass =
     q.type === "checkbox" ? "option-bullet square" : "option-bullet";
   const list = document.getElementById(`options-${qId}`);
@@ -170,6 +177,7 @@ function reIndexCards() {
   });
 }
 
+/* ─── UI helpers ─────────────────────────────────────────────── */
 function updateCount() {
   const n = questions.length;
   document.getElementById("questions-count").textContent =
@@ -195,6 +203,7 @@ function escHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+/* ─── Build JSON & submit ────────────────────────────────────── */
 function buildAndSubmit() {
   const name = document.getElementById("survey-name").value.trim();
   const description = document
@@ -252,8 +261,9 @@ function buildAndSubmit() {
 
   setNote("Sending…");
 
-  fetch("/engine/api/survey/", {
+  fetch("/api/survey/", {
     method: "POST",
+    credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
       "X-CSRFToken": getCookie("csrftoken"),
@@ -264,14 +274,15 @@ function buildAndSubmit() {
       if (r.ok) {
         window.location.href = "/";
       } else {
-        window.location.href = "/engine/survey/";
+        window.location.href = "/engine/survey";
       }
     })
     .catch(() => {
-      window.location.href = "/engine/survey/";
+      window.location.href = "/engine/survey";
     });
 }
 
+// Helper for CSRF token when you hook up the fetch
 function getCookie(name) {
   const match = document.cookie.match(
     new RegExp("(?:^|; )" + name + "=([^;]*)"),
