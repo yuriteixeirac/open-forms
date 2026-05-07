@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}{{ survey.name }}{% endblock %}
+{% block head %}
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style/survey-visualization.css' %}">
+{% endblock %}
+{% block main %}
+
+<div id="title">
+    <h2>{{ survey.name }}</h2>
+    {% if survey.description %}
+        <p id="survey-description">{{ survey.description }}</p>
+    {% endif %}
+</div>
+
+<form id="survey-form" data-survey-id="{{ survey.id }}" novalidate>
+    {% for question in survey.questions %}
+    <div class="question-block" data-question-id="{{ question.id }}" data-type="{{ question.type }}">
+        <p class="question-text">
+            {{ forloop.counter }}. {{ question.question }}
+            {% if question.required %}<span class="required-mark">*</span>{% endif %}
+        </p>
+
+        {% if question.type == "text" %}
+            <textarea
+                class="answer-input"
+                name="{{ question.id }}"
+                placeholder="Your answer…"
+                rows="3"
+                {% if question.required %}required{% endif %}
+            ></textarea>
+
+        {% elif question.type == "number" %}
+            <input
+                class="answer-input"
+                type="number"
+                name="{{ question.id }}"
+                placeholder="0"
+                {% if question.required %}required{% endif %}
+            >
+
+        {% elif question.type == "radio" %}
+            <div class="options-group">
+                {% for option in question.options %}
+                <label class="option-label">
+                    <input
+                        type="radio"
+                        name="{{ question.id }}"
+                        value="{{ option }}"
+                        {% if question.required %}required{% endif %}
+                    >
+                    <span class="option-text">{{ option }}</span>
+                </label>
+                {% endfor %}
+            </div>
+
+        {% elif question.type == "checkbox" %}
+            <div class="options-group">
+                {% for option in question.options %}
+                <label class="option-label">
+                    <input
+                        type="checkbox"
+                        name="{{ question.id }}"
+                        value="{{ option }}"
+                    >
+                    <span class="option-text">{{ option }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <p class="field-error hidden">This field is required.</p>
+    </div>
+    {% endfor %}
+
+    <div id="form-footer">
+        <span id="footer-note"></span>
+        <button type="button" onclick="submitSurvey()">Submit <span>→</span></button>
+    </div>
+</form>
+
+{% load static %}
+<script src="{% static 'js/survey-visualization.js' %}"></script>
+{% endblock %}

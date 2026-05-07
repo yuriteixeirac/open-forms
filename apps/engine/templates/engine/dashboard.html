@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block head %}
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style/dashboard.css' %}">
+{% endblock %}
+{% block main %}
+
+<div id="title">
+    <h2>Dashboard</h2>
+    <a href="{% url 'survey-creation' %}" class="new-survey-btn">+ New Survey</a>
+</div>
+
+{# ── Stats row ───────────────────────────────────────────────── #}
+<section id="stats-row">
+    <div class="stat-card">
+        <span class="stat-value">{{ stats.total_surveys }}</span>
+        <span class="stat-label">Total Surveys</span>
+    </div>
+    <div class="stat-card accent">
+        <span class="stat-value">{{ stats.active_surveys }}</span>
+        <span class="stat-label">Active</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-value">{{ stats.total_submissions }}</span>
+        <span class="stat-label">Total Submissions</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-value">{{ stats.submissions_this_week }}</span>
+        <span class="stat-label">This Week</span>
+    </div>
+</section>
+
+{# ── Main content ────────────────────────────────────────────── #}
+<section id="main-content">
+
+    {# ── Survey list ─────────────────────────────────────────── #}
+    <div id="surveys-panel">
+        <div class="panel-header">
+            <h3>Your Surveys</h3>
+        </div>
+
+        {% if surveys %}
+            {# Active surveys #}
+            {% for survey in surveys %}
+                {% if survey.is_active %}
+                <a href="{% url 'survey-detail' survey.id %}" class="survey-card active">
+                    <div class="survey-card-top">
+                        <span class="survey-name">{{ survey.name }}</span>
+                        <span class="status-badge active">Active</span>
+                    </div>
+                    <div class="survey-card-meta">
+                        <span>{{ survey.submission_count }} response{{ survey.submission_count|pluralize }}</span>
+                        <span class="dot">·</span>
+                        <span>Expires {{ survey.valid_until|date:"M d, Y" }}</span>
+                    </div>
+                    {% if survey.description %}
+                    <p class="survey-desc">{{ survey.description|truncatechars:90 }}</p>
+                    {% endif %}
+                </a>
+                {% endif %}
+            {% endfor %}
+
+            {# Expired surveys #}
+            {% with expired=surveys|dictsort:"valid_until" %}
+            {% for survey in surveys %}
+                {% if not survey.is_active %}
+                <a href="{% url 'survey-detail' survey.id %}" class="survey-card expired">
+                    <div class="survey-card-top">
+                        <span class="survey-name">{{ survey.name }}</span>
+                        <span class="status-badge expired">Expired</span>
+                    </div>
+                    <div class="survey-card-meta">
+                        <span>{{ survey.submission_count }} response{{ survey.submission_count|pluralize }}</span>
+                        <span class="dot">·</span>
+                        <span>Ended {{ survey.valid_until|date:"M d, Y" }}</span>
+                    </div>
+                </a>
+                {% endif %}
+            {% endfor %}
+            {% endwith %}
+
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">⬡</div>
+                <p>No surveys yet.</p>
+                <a href="{% url 'survey-creation' %}" class="empty-cta">Create your first one</a>
+            </div>
+        {% endif %}
+    </div>
+
+    {# ── Recent responses ────────────────────────────────────── #}
+    <div id="activity-panel">
+        <div class="panel-header">
+            <h3>Recent Responses</h3>
+        </div>
+
+        {% if recent_submissions %}
+            <ul class="activity-list">
+                {% for response in recent_submissions %}
+                <li class="activity-item">
+                    <div class="activity-dot"></div>
+                    <div class="activity-body">
+                        <span class="activity-survey">{{ submission.survey.name }}</span>
+                        <span class="activity-time">{{ submission.created_at|timesince }} ago</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-state small">
+                <p>No responses yet.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</section>
+
+{% load static %}
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block title %}{{ survey.name }}{% endblock %}
+{% block head %}
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style/survey-detail.css' %}">
+{% endblock %}
+{% block main %}
+{% load tz %}
+
+<div id="title">
+    <div id="title-left">
+        <a href="{% url 'dashboard' %}" class="back-link">← Dashboard</a>
+        <h2>{{ survey.name }}</h2>
+        {% if survey.description %}
+            <p id="survey-description">{{ survey.description }}</p>
+        {% endif %}
+    </div>
+    <div id="title-right">
+        {% if survey.is_active %}
+            <span class="status-badge active">Active</span>
+        {% else %}
+            <span class="status-badge expired">Expired</span>
+        {% endif %}
+    </div>
+</div>
+
+{# ── Stats row ───────────────────────────────────────────────── #}
+<section id="stats-row">
+    <div class="stat-card accent">
+        <span class="stat-value">{{ submission_count }}</span>
+        <span class="stat-label">Submission{{ submission_count|pluralize }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-value">{{ survey.questions|length }}</span>
+        <span class="stat-label">Question{{ survey.questions|length|pluralize }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-value">{{ survey.created_at|date:"M d" }}</span>
+        <span class="stat-label">Created</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-value">{{ survey.valid_until|date:"M d" }}</span>
+        <span class="stat-label">
+            {% if survey.is_active %}Expires{% else %}Expired{% endif %}
+        </span>
+    </div>
+</section>
+
+{# ── Questions + activity ─────────────────────────────────────── #}
+<section id="main-content">
+
+    {# ── Questions ───────────────────────────────────────────── #}
+    <div id="questions-panel">
+        <div class="panel-header">
+            <h3>Answers by Question</h3>
+        </div>
+
+        {% for q in questions_data %}
+        <div class="question-card">
+            <div class="question-card-top">
+                <p class="question-text">{{ forloop.counter }}. {{ q.question }}</p>
+                <span class="type-badge">{{ q.type }}</span>
+            </div>
+            <p class="response-count">{{ q.responded }} answer{{ q.responded|pluralize }}</p>
+
+            {# Radio / Checkbox — bar chart #}
+            {% if q.type == "radio" or q.type == "checkbox" %}
+                <div class="option-bars">
+                    {% for opt in q.option_stats %}
+                    <div class="option-row">
+                        <span class="option-label">{{ opt.label }}</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: {{ opt.pct }}%"></div>
+                        </div>
+                        <span class="option-stat">{{ opt.count }} <em>({{ opt.pct }}%)</em></span>
+                    </div>
+                    {% empty %}
+                        <p class="no-answers">No answers yet.</p>
+                    {% endfor %}
+                </div>
+
+            {# Number — stats + list #}
+            {% elif q.type == "number" %}
+                {% if q.number_answers %}
+                <div class="number-stats">
+                    <div class="number-stat">
+                        <span class="number-stat-value">{{ q.average }}</span>
+                        <span class="number-stat-label">Average</span>
+                    </div>
+                    <div class="number-stat">
+                        <span class="number-stat-value">{{ q.minimum }}</span>
+                        <span class="number-stat-label">Min</span>
+                    </div>
+                    <div class="number-stat">
+                        <span class="number-stat-value">{{ q.maximum }}</span>
+                        <span class="number-stat-label">Max</span>
+                    </div>
+                </div>
+                <div class="text-answers">
+                    {% for val in q.number_answers %}
+                        <span class="text-chip">{{ val }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                    <p class="no-answers">No answers yet.</p>
+                {% endif %}
+
+            {# Text — list of responses #}
+            {% elif q.type == "text" %}
+                {% if q.text_answers %}
+                <div class="text-answers">
+                    {% for val in q.text_answers %}
+                        <div class="text-answer">{{ val }}</div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                    <p class="no-answers">No answers yet.</p>
+                {% endif %}
+            {% endif %}
+
+        </div>
+        {% endfor %}
+    </div>
+
+    {# ── Recent submissions ───────────────────────────────────── #}
+    <div id="activity-panel">
+        <div class="panel-header">
+            <h3>Recent Submissions</h3>
+        </div>
+
+        {% if recent_submissions %}
+        <ul class="activity-list">
+            {% for sub in recent_submissions %}
+            <li class="activity-item">
+                <div class="activity-dot"></div>
+                <div class="activity-body">
+                    <span class="activity-label">Submission #{{ sub.id }}</span>
+                    <span class="activity-time">{{ sub.created_at|timesince }} ago</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="empty-state small">
+            <p>No submissions yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</section>
+
+{% endblock %}

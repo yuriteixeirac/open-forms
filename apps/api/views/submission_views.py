@@ -1,9 +1,9 @@
+from rest_framework.views import APIView
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ViewSet
 from apps.api.models import Submission, Survey
 from apps.api.serializers import SubmissionInputSerializer, SubmissionOutputSerializer
 
@@ -15,33 +15,22 @@ TODO:
 """
 
 
-class SubmissionViewSet(ViewSet):
+class SubmissionViews(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
-
-    def retrieve(self, request, submission_id: int):
-        submission = get_object_or_404(Submission, pk=submission_id)
-        serializer = SubmissionOutputSerializer(submission)
-        return Response(serializer.data, status=200)
+    queryset = Submission.objects.all()     # type: ignore
+    serializer_class = SubmissionOutputSerializer
 
 
-    def list(self, request):
-        submissions = Submission.objects.all()  # type: ignore
-        serializer = SubmissionOutputSerializer(submissions, many=True)
-        return Response(serializer.data, status=200)
-
-
-    def create(self, request):
+    def post(self, request, survey_id: int | None = None):
         serializer = SubmissionInputSerializer(data=request.data)
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=400)
 
         # 1. VERIFICANDO SURVEY
-        survey_id: int = serializer.validated_data.get('survey_id')
         survey: Survey = get_object_or_404(Survey, pk=survey_id)
-
 
         """
         2. VERIFICANDO SE OS IDS BATEM

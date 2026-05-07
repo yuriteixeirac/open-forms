@@ -25,8 +25,8 @@ class SurveyViewSet(ViewSet):
         )
 
 
-    def retrieve(self, request, survey_id: int):
-        survey = self.queryset.filter(pk=survey_id).first()
+    def retrieve(self, request, pk: int):
+        survey = self.queryset.filter(pk=pk).first()
         return Response(SurveyOutputSerializer(survey).data, status=200)
 
 
