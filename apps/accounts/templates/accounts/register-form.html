@@ -1,14 +1,24 @@
-<!doctype html>
-<html lang="pt-br">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>OpenForms | Register</title>
-    </head>
-    <body>
-        <form action="{% url 'register-view' %}" method="post">
-            {% csrf_token %} {{ form.as_p }}
-            <button type="submit">Enviar</button>
-        </form>
-    </body>
-</html>
+{% extends 'base.html' %}
+
+{% block title%}Register{% endblock%}
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'style/auth.css' %}">
+{% endblock %}
+
+{% block main %}
+<div class="register-card">
+    <div class="card-header">
+        <h1>Create account</h1>
+        <p>Fill in the details below to get started.</p>
+    </div>
+
+    <form action="{% url 'register-view' %}" method="post" class="form-fields">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="submit-btn">Register →</button>
+    </form>
+
+    <p class="login-link">Already have an account? <a href="{% url 'login-view' %}">Sign in</a></p>
+</div>
+{% endblock %}

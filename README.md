@@ -1,4 +1,4 @@
-# OpenForm
+# OpenForms
 
 A self-hostable, privacy focused formulary and survey manager that serves as a secure compliant alternative to similar services for gathering data and serving it on visual dashboard and REST API.
 
