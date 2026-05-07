@@ -33,6 +33,7 @@ class SurveyViewSet(ViewSet):
     def create(self, request):
         serializer = SurveyInputSerializer(data=request.data)
 
+
         if not serializer.is_valid():
             return Response({
                 'errors': serializer.errors
@@ -48,6 +49,7 @@ class SurveyViewSet(ViewSet):
             name=serializer.data.get('name'),
             description=serializer.data.get('description'),
             questions=serializer.data.get('questions'),
+            valid_until=serializer.data.get('valid_until'),
         )
         survey.save()
 

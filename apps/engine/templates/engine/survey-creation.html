@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Survey Creation{% endblock %}
+{% block head %}
+    {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style/survey-creation.css' %}">
+{% endblock %}
+{% block main %}
+
+<div class="builder-wrapper">
+
+    <section class="survey-meta">
+        <div class="field-group">
+            <label for="survey-name">Survey Name</label>
+            <input type="text" id="survey-name" placeholder="e.g. Customer Satisfaction Q2" autocomplete="off">
+        </div>
+        <div class="field-group">
+            <label for="survey-description">Description</label>
+            <textarea id="survey-description" placeholder="A brief description of the survey's purpose..." rows="3"></textarea>
+        </div>
+        <div class="field-group">
+            <label for="survey-deadline">Valid until</label>
+            <input type="datetime-local" id="survey-deadline">
+        </div>
+    </section>
+
+    <section class="questions-section">
+        <div class="questions-header">
+            <span class="questions-label">Questions</span>
+            <span class="questions-count" id="questions-count">0 questions</span>
+        </div>
+        <div id="survey-fields" class="survey-fields"></div>
+        <div class="empty-state" id="empty-state">
+            <div class="empty-icon">⬡</div>
+            <p>No questions yet. Add your first one below.</p>
+        </div>
+    </section>
+
+    <div class="add-field-bar">
+        <div class="type-selector">
+            <button class="type-btn active" data-type="text">
+                <span class="type-icon">T</span> Text
+            </button>
+            <button class="type-btn" data-type="number">
+                <span class="type-icon">#</span> Number
+            </button>
+            <button class="type-btn" data-type="radio">
+                <span class="type-icon">◉</span> Radio
+            </button>
+            <button class="type-btn" data-type="checkbox">
+                <span class="type-icon">☑</span> Checkbox
+            </button>
+        </div>
+        <button class="add-btn" id="add-field-btn" onclick="addField()">
+            <span>+</span> Add Field
+        </button>
+    </div>
+
+    <div class="builder-footer">
+        <div class="footer-note" id="footer-note"></div>
+        <button class="submit-btn" onclick="buildAndSubmit()">
+            Create Survey <span class="arrow">→</span>
+        </button>
+    </div>
+
+</div>
+
+{% load static %}
+<script src="{% static 'js/survey-creation.js' %}"></script>
+{% endblock %}

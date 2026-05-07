@@ -1,3 +1,4 @@
 from apps.engine.serializers.survey_input_serializer import SurveyInputSerializer
 from apps.engine.serializers.survey_output_serializer import SurveyOutputSerializer
-from apps.engine.serializers.submission_serializer import SubmissionInputSerializer
+from apps.engine.serializers.submission_input_serializer import SubmissionInputSerializer
+from apps.engine.serializers.submission_output_serializer import SubmissionOutputSerializer

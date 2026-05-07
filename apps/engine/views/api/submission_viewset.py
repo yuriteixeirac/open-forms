@@ -5,9 +5,7 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ViewSet
 from apps.engine.models import Submission, Survey
-from apps.engine.serializers import SubmissionInputSerializer
-
-
+from apps.engine.serializers import SubmissionInputSerializer, SubmissionOutputSerializer
 
 """
 TODO:
@@ -16,9 +14,22 @@ TODO:
     - CONECTAR AO FRONT-END;
 """
 
+
 class SubmissionViewSet(ViewSet):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
+
+
+    def retrieve(self, request, submission_id: int):
+        submission = get_object_or_404(Submission, pk=submission_id)
+        serializer = SubmissionOutputSerializer(submission)
+        return Response(serializer.data, status=200)
+
+
+    def list(self, request):
+        submissions = Submission.objects.all()  # type: ignore
+        serializer = SubmissionOutputSerializer(submissions, many=True)
+        return Response(serializer.data, status=200)
 
 
     def create(self, request):
